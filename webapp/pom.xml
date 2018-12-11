@@ -102,31 +102,36 @@
                <packagingExcludes>test/**</packagingExcludes>
             </configuration>
          </plugin>
-         <plugin>
-            <groupId>org.mortbay.jetty</groupId>
-            <artifactId>maven-jetty-plugin</artifactId>
-            <version>6.1.10</version>
-            <configuration>
-               <webXml>${project.build.directory}/jetty/WEB-INF/web.xml</webXml>
-               <webAppConfig>
-                  <contextPath>/${webapp.name}</contextPath>
-                  <!--enable reloading static resources -->
-                  <overrideDescriptor>src/test/resources/override-web.xml</overrideDescriptor>
-                  <extraClasspath>target/classes;../api/target/classes;../web/target/classes</extraClasspath>
-               </webAppConfig>
-               <scanIntervalSeconds>10</scanIntervalSeconds>
-               <scanTargets>
-                  <scanTarget>../api/target/classes</scanTarget>
-                  <scanTarget>../web/target/classes</scanTarget>
-               </scanTargets>
-               <systemProperties>
-                   <systemProperty>
-                       <name>OPENMRS_INSTALLATION_SCRIPT</name>
-                       <value>${OPENMRS_INSTALLATION_SCRIPT}</value>
-                   </systemProperty>
-               </systemProperties>
-            </configuration>
-         </plugin>
+          <plugin>
+              <groupId>org.eclipse.jetty</groupId>
+              <artifactId>jetty-maven-plugin</artifactId>
+              <version>9.0.0.v20130308</version>
+          </plugin>
+         <!--<plugin>-->
+            <!--<groupId>org.mortbay.jetty</groupId>-->
+            <!--<artifactId>maven-jetty-plugin</artifactId>-->
+            <!--<version>6.1.10</version>-->
+            <!--<configuration>-->
+               <!--<webXml>${project.build.directory}/jetty/WEB-INF/web.xml</webXml>-->
+               <!--<webAppConfig>-->
+                  <!--<contextPath>/${webapp.name}</contextPath>-->
+                  <!--&lt;!&ndash;enable reloading static resources &ndash;&gt;-->
+                  <!--<overrideDescriptor>src/test/resources/override-web.xml</overrideDescriptor>-->
+                  <!--<extraClasspath>target/classes;../api/target/classes;../web/target/classes</extraClasspath>-->
+               <!--</webAppConfig>-->
+               <!--<scanIntervalSeconds>10</scanIntervalSeconds>-->
+               <!--<scanTargets>-->
+                  <!--<scanTarget>../api/target/classes</scanTarget>-->
+                  <!--<scanTarget>../web/target/classes</scanTarget>-->
+               <!--</scanTargets>-->
+               <!--<systemProperties>-->
+                   <!--<systemProperty>-->
+                       <!--<name>OPENMRS_INSTALLATION_SCRIPT</name>-->
+                       <!--<value>${OPENMRS_INSTALLATION_SCRIPT}</value>-->
+                   <!--</systemProperty>-->
+               <!--</systemProperties>-->
+            <!--</configuration>-->
+         <!--</plugin>-->
          <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
@@ -154,21 +159,25 @@
          </activation>
          <build>
             <plugins>
-               <plugin>
-                  <groupId>org.mortbay.jetty</groupId>
-                  <artifactId>maven-jetty-plugin</artifactId>
-                  <version>6.1.10</version>
-                  <configuration>
-                     <webXml>${project.build.directory}/jetty/WEB-INF/web.xml</webXml>
-                     <webAppConfig>
-                        <contextPath>/${webapp.name}</contextPath>
-                        <!--enable reloading static resources -->
-                        <overrideDescriptor>src/test/resources/override-web.xml</overrideDescriptor>
-                        <extraClasspath>target/classes;../api/target/classes;../web/target/classes</extraClasspath>
-                     </webAppConfig>
-                     <scanIntervalSeconds>0</scanIntervalSeconds>
-                  </configuration>
-               </plugin>
+                <plugin>
+                    <groupId>org.eclipse.jetty</groupId>
+                    <artifactId>jetty-maven-plugin</artifactId>
+                    <version>9.0.0.v20130308</version>
+                </plugin>
+               <!--<plugin>-->
+                  <!--<groupId>org.mortbay.jetty</groupId>-->
+                  <!--<artifactId>maven-jetty-plugin</artifactId>-->
+                  <!--<configuration>-->
+                     <!--<webXml>${project.build.directory}/jetty/WEB-INF/web.xml</webXml>-->
+                     <!--<webAppConfig>-->
+                        <!--<contextPath>/${webapp.name}</contextPath>-->
+                        <!--&lt;!&ndash;enable reloading static resources &ndash;&gt;-->
+                        <!--<overrideDescriptor>src/test/resources/override-web.xml</overrideDescriptor>-->
+                        <!--<extraClasspath>target/classes;../api/target/classes;../web/target/classes</extraClasspath>-->
+                     <!--</webAppConfig>-->
+                     <!--<scanIntervalSeconds>0</scanIntervalSeconds>-->
+                  <!--</configuration>-->
+               <!--</plugin>-->
 				<plugin>
 					<groupId>org.zeroturnaround</groupId>
 					<artifactId>javarebel-maven-plugin</artifactId>
@@ -256,6 +265,11 @@
 			<!-- Create sources and javadocs jar -->
 			<build>
 				<plugins>
+                    <plugin>
+                        <groupId>org.eclipse.jetty</groupId>
+                        <artifactId>jetty-maven-plugin</artifactId>
+                        <version>9.0.0.v20130308</version>
+                    </plugin>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-source-plugin</artifactId>

@@ -671,6 +671,21 @@
 			        <version>2.4</version>
 				</plugin>
 				<plugin>
+					<groupId>org.eclipse.jetty</groupId>
+					<artifactId>jetty-jspc-maven-plugin</artifactId>
+					<version>9.4.13-SNAPSHOT</version>
+					<executions>
+						<execution>
+							<id>jspc</id>
+							<goals>
+								<goal>jspc</goal>
+							</goals>
+							<configuration>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>buildnumber-maven-plugin</artifactId>
 					<version>1.1</version>
@@ -1105,6 +1120,11 @@
 					<groupId>org.codehaus.sonar-plugins.java</groupId>
 					<artifactId>sonar-jacoco-listeners</artifactId>
 					<scope>test</scope>
+				</dependency>
+				<dependency>
+					<groupId>org.eclipse.jetty</groupId>
+					<artifactId>jetty-jsp</artifactId>
+					<version>9.2.10.v20150310</version>
 				</dependency>
 			</dependencies>
 		</profile>
