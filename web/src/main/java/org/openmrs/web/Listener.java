@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.StringReader;
 import java.sql.Driver;
@@ -32,9 +33,13 @@ import javax.servlet.ServletException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.log4j.LogManager;
+import org.apache.lucene.index.CheckIndex;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.FSDirectory;
 import org.openmrs.PersonName;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.MandatoryModuleException;
@@ -174,6 +179,7 @@ public final class Listener extends ContextLoader implements ServletContextListe
 				 * and hence not garbage collected
 				 */
 				XmlWebApplicationContext context = (XmlWebApplicationContext) createWebApplicationContext(servletContext);
+				Context.examineSearchIndex();
 				configureAndRefreshWebApplicationContext(context, servletContext);
 				servletContext.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, context);
 				
@@ -220,8 +226,10 @@ public final class Listener extends ContextLoader implements ServletContextListe
 			throw new APIException("This method can only be called from the WebDaemon class, not " + callerClass.getName());*/
 
 		// start openmrs
+		
 		try {
 			// load bundled modules that are packaged into the webapp
+			
 			Listener.loadBundledModules(servletContext);
 			
 			Context.startup(getRuntimeProperties());

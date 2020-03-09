@@ -9,6 +9,9 @@
  */
 package org.openmrs.api.context;
 
+import java.io.File;
+import java.io.FilenameFilter;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,9 +28,13 @@ import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 
 import org.aopalliance.aop.Advice;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.lucene.index.CheckIndex;
+import org.apache.lucene.store.Directory;
+import org.apache.lucene.store.FSDirectory;
 import org.openmrs.GlobalProperty;
 import org.openmrs.PersonName;
 import org.openmrs.Privilege;
@@ -1429,5 +1436,91 @@ public class Context {
 	 */
 	public static boolean isUseSystemClassLoader() {
 		return getServiceContext().isUseSystemClassLoader();
+	}
+	
+	/**
+	 * Examines lucene indexes and clears everything for rebuild if there is an error
+	 * This has been necessitated by corrupted indexes more so after power outage during EMR use
+	 */
+	public static void examineSearchIndex() {
+		Log log = LogFactory.getLog(Context.class);
+		File luceneDir = OpenmrsUtil.getDirectoryInApplicationDataDirectory("lucene");
+		String fullDirPath = luceneDir.getPath() + File.separator + "indexes";
+		File indexesDir = new File(fullDirPath);
+		
+		String[] directories = indexesDir.list(new FilenameFilter() {
+			
+			@Override
+			public boolean accept(File current, String name) {
+				return new File(current, name).isDirectory();
+			}
+		});
+		
+		boolean indexesInGoodCondition = true;
+		for (int i = 0; i < directories.length; i++) {
+			
+			String dirPath = directories[i];
+			File indexDir = new File(fullDirPath + File.separator + dirPath);
+			try {
+				
+				Directory luceneIndexDir = FSDirectory.open(indexDir);
+				CheckIndex checkIndex = new CheckIndex(luceneIndexDir);
+				CheckIndex.Status status = checkIndex.checkIndex();
+				
+				if (status == null || status.numSegments < 1 || !status.clean) {
+					indexesInGoodCondition = false;
+					break;
+				}
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		if (!indexesInGoodCondition) {
+			
+			try {
+				FileUtils.cleanDirectory(indexesDir);
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public static boolean rebuildLuceneIndexes() {
+		Log log = LogFactory.getLog(Context.class);
+		File luceneDir = OpenmrsUtil.getDirectoryInApplicationDataDirectory("lucene");
+		String fullDirPath = luceneDir.getPath() + File.separator + "indexes";
+		File indexesDir = new File(fullDirPath);
+		
+		String[] directories = indexesDir.list(new FilenameFilter() {
+			
+			@Override
+			public boolean accept(File current, String name) {
+				return new File(current, name).isDirectory();
+			}
+		});
+		
+		for (int i = 0; i < directories.length; i++) {
+			
+			String dirPath = directories[i];
+			File indexDir = new File(fullDirPath + File.separator + dirPath);
+			try {
+				
+				Directory luceneIndexDir = FSDirectory.open(indexDir);
+				CheckIndex checkIndex = new CheckIndex(luceneIndexDir);
+				CheckIndex.Status status = checkIndex.checkIndex();
+				
+				if (status == null || status.numSegments < 1 || !status.clean) {
+					return true;
+				}
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return false;
 	}
 }

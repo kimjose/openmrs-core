@@ -468,7 +468,7 @@ public class HibernateContextDAO implements ContextDAO {
 	public void setupSearchIndex() {
 		String gp = Context.getAdministrationService().getGlobalProperty(OpenmrsConstants.GP_SEARCH_INDEX_VERSION, "");
 		
-		if (!OpenmrsConstants.SEARCH_INDEX_VERSION.toString().equals(gp)) {
+		if (Context.rebuildLuceneIndexes() || !OpenmrsConstants.SEARCH_INDEX_VERSION.toString().equals(gp)) {
 			updateSearchIndex();
 		}
 	}
